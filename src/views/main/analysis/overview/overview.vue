@@ -13,8 +13,7 @@ import {
   <div class="overview">
     <el-card header="关于">
       <span>
-        vue3+ts后台管理系统基于Vite、Vue3、Vue Router、Pinia、Axios、TS、Element
-        Plus、Echarts5的解决方案。
+        vue3+ts后台管理系统基于Vue3、VueRouter、Pinia、Axios、TS、Element Plus、Echarts5的解决方案。
       </span>
     </el-card>
     <el-card header="技术栈">
