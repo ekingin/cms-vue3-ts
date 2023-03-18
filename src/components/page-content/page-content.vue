@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
+import router from '@/router'
 import useSystemStore from '@/store/main/system'
 import useMainStore from '@/store/main/main'
+import useLoginStore from '@/store/login/login'
 import { formatUTC } from '@/utils/format'
 import { mapValueFromDict } from '@/utils/map-data'
 import usePermission from '@/hooks/usePermission'
@@ -15,20 +17,32 @@ const emit = defineEmits(['addClick', 'editClick', 'btnClick'])
 const pageName = ref(props.contentConfig.pageName)
 const systemStore = useSystemStore()
 const mainStore = useMainStore()
+const loginStore = useLoginStore()
 const currentPage = ref(1)
 const pageSize = ref(10)
+const { userInfo } = storeToRefs(loginStore)
 
 // item.dictUrl => item.dict
 for (const item of props.contentConfig.propList) {
   if (!item.dictUrl) continue
-  mainStore.postDictAction(item.dictUrl).then((dict) => (item.dict = dict))
+  watchEffect(async () => {
+    item.dict = await mainStore.queryDictAction(item.dictUrl!)
+  })
 }
 
 // 按钮权限管理：查询、删除、新建、修改
 const isCreate = usePermission(`${pageName.value}:create`)
 const isUpdate = usePermission(`${pageName.value}:update`)
 const isDelete = usePermission(`${pageName.value}:delete`)
-const isQuery = usePermission(`${pageName.value}:query`) || pageName.value === 'story'
+const isQuery = usePermission(`${pageName.value}:query`)
+
+// 如果有动态的查询权限，动态注册动态详情路由
+if (pageName.value === 'moment' && isQuery) {
+  import('../../router/main/hole/moment/detail').then((res) => {
+    const momentDetailRoute = res.default
+    router.addRoute('main', momentDetailRoute)
+  })
+}
 
 // 发送请求、获取数据
 fetchPageDataList()
@@ -75,9 +89,9 @@ function fetchPageDataList(formData = {}) {
 
   const size = pageSize.value
   const offset = (currentPage.value - 1) * size
-  const queryInfo = { size, offset, ...formData }
+  const queryInfo = { size, offset }
 
-  systemStore.getDataListAction(pageName.value, queryInfo)
+  systemStore.getDataListAction(pageName.value, queryInfo, formData)
 }
 
 defineExpose({
@@ -126,8 +140,10 @@ defineExpose({
               <template v-for="bItem in item.btns" :key="bItem.label">
                 <el-button
                   v-if="
-                    (bItem.trigger === 'UPDATE' && isUpdate) ||
-                    (bItem.trigger === 'DELETE' && isDelete)
+                    (scope.row.type ? scope.row.type < 3 : true) &&
+                    (scope.row.userId ? scope.row.userId === userInfo.id : true) &&
+                    ((bItem.trigger === 'UPDATE' && isUpdate) ||
+                      (bItem.trigger === 'DELETE' && isDelete))
                   "
                   v-bind="bItem"
                   @click="handleBtnClick(bItem, scope.row)"
@@ -176,6 +192,7 @@ defineExpose({
     margin-bottom: 20px;
     .title {
       font-size: 18px;
+      margin: 0;
     }
   }
   .content-pagination {

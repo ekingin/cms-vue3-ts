@@ -8,8 +8,8 @@ const contentConfig: IContentConfig = {
     { label: '序号', type: 'index', width: '80', align: 'center' },
     { label: '角色名称', prop: 'name', width: '150', align: 'center' },
     { label: '权限介绍', prop: 'intro', width: '150', align: 'center' },
-    { label: '创建时间', prop: 'createAt', type: 'time', align: 'center' },
-    { label: '更新时间', prop: 'updateAt', type: 'time', align: 'center' },
+    { label: '创建时间', prop: 'createTime', type: 'time', align: 'center' },
+    { label: '更新时间', prop: 'updateTime', type: 'time', align: 'center' },
     {
       label: '操作',
       type: 'handler',

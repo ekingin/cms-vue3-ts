@@ -1,5 +1,4 @@
 import { API_DICT_CATEGORY } from '@/global/constants'
-import { GOODS_STATUS_DICT } from '@/global/local-dicts'
 import type { IModalConfig } from '@/types'
 
 const modalConfig: IModalConfig = {
@@ -44,7 +43,7 @@ const modalConfig: IModalConfig = {
       type: 'input',
       label: '库存数量：',
       prop: 'inventoryCount',
-      placeholder: '请输入图片URL'
+      placeholder: '请输入库存数量'
     },
     {
       type: 'input',
@@ -58,14 +57,6 @@ const modalConfig: IModalConfig = {
       prop: 'categoryId',
       placeholder: '请选择商品分类',
       dictUrl: API_DICT_CATEGORY
-    },
-    {
-      type: 'select',
-      label: '商品状态：',
-      prop: 'status',
-      placeholder: '请选择商品状态',
-      options: GOODS_STATUS_DICT,
-      hidden: false
     }
   ],
   btns: [

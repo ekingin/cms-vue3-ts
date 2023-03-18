@@ -1,3 +1,5 @@
+import { CACHE_PREFIX } from '@/global/constants'
+
 enum CacheType {
   Local,
   Session
@@ -12,12 +14,12 @@ class Cache {
 
   setCache(key: string, value: any) {
     if (value) {
-      this.storage.setItem(key, JSON.stringify(value))
+      this.storage.setItem(CACHE_PREFIX + key, JSON.stringify(value))
     }
   }
 
   getCache(key: string) {
-    const value = this.storage.getItem(key)
+    const value = this.storage.getItem(CACHE_PREFIX + key)
     if (value) {
       return JSON.parse(value)
     }
@@ -25,7 +27,7 @@ class Cache {
 
   removeCache(key: string) {
     if (key) {
-      this.storage.removeItem(key)
+      this.storage.removeItem(CACHE_PREFIX + key)
     }
   }
 

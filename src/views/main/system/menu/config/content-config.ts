@@ -9,10 +9,10 @@ const contentConfig: IContentConfig = {
     { label: '菜单级别', prop: 'type', width: '100', align: 'center' },
     { label: '菜单url', prop: 'url', width: '230', align: 'center' },
     { label: '菜单icon', prop: 'icon', width: '200', align: 'center' },
-    { label: '排序', prop: 'sort', width: '60', align: 'center' },
+    // { label: '排序', prop: 'sort', width: '60', align: 'center' },
     { label: '权限', prop: 'permission', width: '250', align: 'center' },
-    { label: '创建时间', prop: 'createAt', type: 'time', width: '180', align: 'center' },
-    { label: '更新时间', prop: 'updateAt', type: 'time', width: '180', align: 'center' },
+    { label: '创建时间', prop: 'createTime', type: 'time', width: '180', align: 'center' },
+    { label: '更新时间', prop: 'updateTime', type: 'time', width: '180', align: 'center' },
     {
       label: '操作',
       type: 'handler',
@@ -26,10 +26,7 @@ const contentConfig: IContentConfig = {
     }
   ],
   tableTreeProps: {
-    rowKey: 'id',
-    treeProps: {
-      children: 'children'
-    }
+    rowKey: 'id'
   }
 }
 export default contentConfig

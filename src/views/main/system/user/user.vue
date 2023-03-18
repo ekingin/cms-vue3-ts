@@ -12,7 +12,9 @@ import pageModal from '@/components/page-modal/page-modal.vue'
 import modalConfig from './config/modal-config'
 import usePageModal from '@/hooks/usePageModal'
 
-// callback
+import useSystemStore from '@/store/main/system'
+
+// 1.hooks
 const modalConfigRef = ref(modalConfig)
 const addCallBack = () => {
   modalConfigRef.value.formItems[2].hidden = false
@@ -21,9 +23,15 @@ const editCallBack = () => {
   modalConfigRef.value.formItems[2].hidden = true
 }
 editCallBack.isPre = true
-
 const { pageContentRef, searchClick, resetClick } = usePageContent()
 const { pageModalRef, addClick, editClick } = usePageModal(addCallBack, editCallBack)
+
+// 2.状态按钮被点击
+const systemStore = useSystemStore()
+const statusBtnClick = (row: any) => {
+  const { id, status } = row
+  systemStore.alterDataByIdAction('users', id, { status: +!status })
+}
 </script>
 
 <template>
@@ -39,9 +47,14 @@ const { pageModalRef, addClick, editClick } = usePageModal(addCallBack, editCall
       @add-click="addClick"
       @edit-click="editClick"
     >
-      <template #enable="scope">
-        <el-button size="small" :type="scope.row.enable === 1 ? 'primary' : 'danger'" plain>
-          {{ scope.row.enable === 1 ? '启用' : '禁用' }}
+      <template #status="scope">
+        <el-button
+          size="small"
+          :type="scope.row.status === 1 ? 'primary' : 'danger'"
+          plain
+          @click="statusBtnClick(scope.row)"
+        >
+          {{ scope.row.status === 1 ? '启用' : '禁用' }}
         </el-button>
       </template>
     </page-content>

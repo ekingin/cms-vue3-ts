@@ -50,12 +50,14 @@ const handleBtnClick = (trigger: string) => {
                 :show-password="item.type === 'password'"
                 v-model="formData[item.prop]"
                 :placeholder="item.placeholder"
+                clearable
               />
               <el-select
                 v-else-if="item.type === 'select'"
                 v-model="formData[item.prop]"
                 :placeholder="item.placeholder"
                 style="width: 100%"
+                clearable
               >
                 <template v-for="oItem in item.options" :key="oItem.value">
                   <el-option :label="oItem.label" :value="oItem.value" />
@@ -68,6 +70,7 @@ const handleBtnClick = (trigger: string) => {
                 :range-separator="item.rangeSeparator"
                 :start-placeholder="item.startPlaceholder"
                 :end-placeholder="item.endPlaceholder"
+                value-format="YYYY-MM-DD"
               />
             </el-form-item>
           </el-col>

@@ -10,15 +10,15 @@ export const postAccountLogin = (account: IAccount) => {
 }
 
 // 获取用户信息
-export const getUserInfoById = (id: number) => {
+export const getUserInfoById = (userId: number) => {
   return ekRequest.get({
-    url: `/users/${id}`
+    url: `/users/${userId}`
   })
 }
 
-// 获取用户菜单
-export const getUserMenusByRoleId = (id: number) => {
+// 获取用户的角色菜单
+export const getUserMenusByRoleId = (roleId: number) => {
   return ekRequest.get({
-    url: `/role/${id}/menu`
+    url: `/role/${roleId}/menu`
   })
 }

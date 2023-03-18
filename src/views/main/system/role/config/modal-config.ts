@@ -22,10 +22,15 @@ const modalConfig: IModalConfig = {
     },
     {
       label: '权限列表：',
-      type: 'slot',
-      slotName: 'introTree'
+      prop: 'menuIds',
+      type: 'slot'
     }
   ],
+  formRules: {
+    name: [{ required: true, message: '必填', trigger: 'blur' }],
+    intro: [{ required: true, message: '必填', trigger: 'blur' }]
+  },
+  validateFileds: ['name', 'intro'],
   btns: [
     { label: '返回', type: '', trigger: 'CANCEL' },
     { label: '确认', type: 'primary', trigger: 'CONFIRM' }

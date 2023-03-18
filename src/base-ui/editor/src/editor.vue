@@ -1,30 +1,23 @@
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import { ref, shallowRef, onMounted, onBeforeUnmount } from 'vue'
+import { ref, shallowRef, onBeforeUnmount } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import type { IToolbarConfig, IEditorConfig, IDomEditor } from '@wangeditor/editor'
 
 const props = withDefaults(
   defineProps<{
-    value?: string
     width?: string | string
     height?: number | string
-    autoFocus?: boolean
     mode?: 'default' | 'simple'
   }>(),
   {
-    value: '',
     width: '100%',
     height: 500,
-    autoFocus: false,
     mode: 'default'
   }
 )
 const emit = defineEmits(['changContent'])
 
-onMounted(() => {
-  valueHtml.value = props.value
-})
 onBeforeUnmount(() => {
   const editor = editorRef.value
   if (editor == null) return
@@ -33,25 +26,22 @@ onBeforeUnmount(() => {
 
 // 编辑器实例
 const editorRef = shallowRef()
-// 内容 HTML
 const valueHtml = ref()
+
 // 工具栏配置对象
 const toolbarConfig: Partial<IToolbarConfig> = {
   excludeKeys: ['group-image', 'group-video', 'insertTable']
 }
 // 编辑器配置对象
 const editorConfig: Partial<IEditorConfig> = {
-  placeholder: '请输入内容...',
-  autoFocus: props.autoFocus
+  placeholder: '请输入内容...'
 }
-const editorHtmlStr = ref<string>()
 
 const handleCreated = (editor: IDomEditor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
 const handleChange = (editor: IDomEditor) => {
-  editorHtmlStr.value = editor.getHtml()
-  emit('changContent', editorHtmlStr.value)
+  emit('changContent', { html: editor.getHtml(), text: editor.getText() })
 }
 </script>
 

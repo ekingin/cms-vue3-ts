@@ -9,40 +9,43 @@ const useSystemStore = defineStore('system', {
     dataTotalCount: 0
   }),
   actions: {
-    // 查询数据列表
-    async getDataListAction(pageName: string, queryInfo = { offset: 0, size: 10 }) {
-      const pageListRes = await getDataList(pageName, queryInfo)
+    async getDataListAction(
+      pageName: string,
+      queryParams = { offset: 0, size: 10 },
+      postData = {}
+    ) {
+      const pageListRes = await getDataList(pageName, queryParams, postData)
       const { list, totalCount } = pageListRes.data
       this.dataList = list
       if (totalCount) {
         this.dataTotalCount = totalCount
       }
-
-      // 白名单中的菜单，在查询数据时，更新字典集合
-      const whiteList = ['role', 'department', 'category']
-      if (whiteList.includes(pageName)) {
-        useMainStore().setDicts(pageName, list)
+    },
+    async deleteDataByIdAction(pageName: string, deleteId: number) {
+      await deleteDataById(pageName, deleteId)
+      this.getDataListAction(pageName)
+      this.updateDictByPageName(pageName)
+    },
+    async addDataAction(pageName: string, postData: any = {}) {
+      await addData(pageName, postData)
+      this.getDataListAction(pageName)
+      this.updateDictByPageName(pageName)
+    },
+    async alterDataByIdAction(pageName: string, patchId: number, patchData: any = {}) {
+      await alterDataById(pageName, patchId, patchData)
+      this.getDataListAction(pageName)
+      this.updateDictByPageName(pageName)
+    },
+    // 更新某一个字典集合 (by pageName)
+    async updateDictByPageName(pageName: string) {
+      // pageName white list
+      const dictList = ['role', 'department', 'category']
+      const mainStore = useMainStore()
+      if (dictList.includes(pageName)) {
+        mainStore.updateDictAction(`/${pageName}/all`)
+      } else if (pageName === 'menu') {
+        mainStore.postWholeMenuTreeAction()
       }
-      // 如果是菜单更新了，需要重新设置 mainStore.entireMenuList
-      if (pageName === 'menu') {
-        const mainStore = useMainStore()
-        mainStore.setEntireMenuList(list)
-      }
-    },
-    // 删除数据
-    async deleteDataByIdAction(pageName: string, id: number) {
-      await deleteDataById(pageName, id)
-      this.getDataListAction(pageName)
-    },
-    // 添加数据
-    async addDataAction(pageName: string, data: any = {}) {
-      await addData(pageName, data)
-      this.getDataListAction(pageName)
-    },
-    // 修改
-    async alterDataByIdAction(pageName: string, id: number, data: any = {}) {
-      await alterDataById(pageName, id, data)
-      this.getDataListAction(pageName)
     }
   }
 })

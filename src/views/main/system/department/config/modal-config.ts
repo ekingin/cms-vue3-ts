@@ -19,7 +19,8 @@ const modalConfig: IModalConfig = {
       label: '部门领导：',
       prop: 'leader',
       type: 'input',
-      placeholder: '请输入部门领导'
+      placeholder: '请输入部门领导',
+      default: null
     },
     {
       label: '上级部门：',
@@ -29,6 +30,10 @@ const modalConfig: IModalConfig = {
       dictUrl: API_DICT_DEPARTMENT
     }
   ],
+  formRules: {
+    name: [{ required: true, message: '必填', trigger: 'blur' }],
+    leader: [{ required: true, message: '必填', trigger: 'blur' }]
+  },
   btns: [
     { label: '返回', type: '', trigger: 'CANCEL' },
     { label: '确认', type: 'primary', trigger: 'CONFIRM' }

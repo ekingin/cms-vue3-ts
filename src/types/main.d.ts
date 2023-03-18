@@ -1,8 +1,9 @@
-import type { ElOption } from 'element-plus'
+import type { FormRules } from 'element-plus'
+import type { RouteRecordRaw } from 'vue-router'
 
 export interface IMainStore {
-  entireMenuList: any[]
-  dicts: Map
+  wholeMenuTree: any[]
+  dicts: Map<string, IOption[]>
 }
 
 export interface IContentConfig {
@@ -22,11 +23,8 @@ interface ISearchConfig {
 
 interface IModalConfig extends ISearchConfig {
   title: any
-}
-
-export interface IDictItem {
-  label: string
-  value: numebr | string
+  formRules?: FormRules
+  validateFileds?: string[]
 }
 
 export interface IPropItem {
@@ -54,18 +52,22 @@ export interface IBtnItem {
   size?: 'large' | 'default' | 'small'
 }
 
+export interface IOption {
+  label: string
+  value: string | number
+}
+
 export interface IFormItem {
   type: string
-  prop?: string
+  prop: string
   label?: string
   placeholder?: string
   startPlaceholder?: string
   endPlaceholder?: string
   rangeSeparator?: string
-  default?: string
+  default?: string | null
   hidden?: boolean
-  options?: ElOption[]
+  options?: IOption[]
   dictUrl?: string
-  slotName?: string
   disabled?: boolean
 }

@@ -1,6 +1,5 @@
 export const LOGIN_TOKEN = 'token'
-
-// 获取字典集合的api
-export const API_DICT_CATEGORY = '/category/list'
-export const API_DICT_ROLE = '/role/list'
-export const API_DICT_DEPARTMENT = '/department/list'
+export const CACHE_PREFIX = 'EKINGIN_'
+export const API_DICT_CATEGORY = '/category/all'
+export const API_DICT_ROLE = '/role/all'
+export const API_DICT_DEPARTMENT = '/department/all'

@@ -12,7 +12,7 @@ const searchConfig: ISearchConfig = {
     },
     {
       type: 'date-range',
-      prop: 'createAt',
+      prop: 'createTime',
       label: '创建时间：',
       startPlaceholder: '开始日期',
       endPlaceholder: '结束日期',

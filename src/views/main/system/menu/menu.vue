@@ -1,48 +1,53 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import useMainStore from '@/store/main/main'
-import { mapMenuListToDict } from '@/utils/map-data'
 
 import pageContent from '@/components/page-content/page-content.vue'
 import contentConfig from './config/content-config'
-import usePageContent from '@/hooks/usePageContent'
 
 import pageModal from '@/components/page-modal/page-modal.vue'
 import modalConfig from './config/modal-config'
 import usePageModal from '@/hooks/usePageModal'
 
+import useMainStore from '@/store/main/main'
+import { mapMenuListToDict } from '@/utils/map-data'
+
 const editRowRef = ref()
 const modalConfigRef = ref(modalConfig)
 const mainStore = useMainStore()
-const { entireMenuList } = storeToRefs(mainStore)
+const { wholeMenuTree } = storeToRefs(mainStore)
 // 根据完整菜单映射字典Map
-const dictMap = computed(() => mapMenuListToDict(entireMenuList.value))
+const dictMap = computed(() => mapMenuListToDict(wholeMenuTree.value))
 
-// 设置父级菜单是否禁用，并且设置其options，菜单icon是否显示
-const setParentMenu = (menuType: number) => {
+// 设置菜单表单字段的初始状态
+const setMenuForm = (menuType: number) => {
   const dict = dictMap.value.get(menuType - 1)
   const parentMenuOptions = dict ?? []
-  const isDisabledParentMenu = dict ? false : true
-  const isHiddenMenuIcon = menuType === 1 ? false : true
+  const isHiddenParent = dict ? false : true
+  const isHiddedIcon = menuType === 1 ? false : true
+  const isHiddenPermission = menuType === 3 ? false : true
   modalConfigRef.value.formItems[2].options = parentMenuOptions
-  modalConfigRef.value.formItems[2].disabled = isDisabledParentMenu
-  modalConfigRef.value.formItems[4].hidden = isHiddenMenuIcon
+  modalConfigRef.value.formItems[2].hidden = isHiddenParent
+  modalConfigRef.value.formItems[3].hidden = isHiddedIcon
+  // url 和 permission 只显示一个
+  modalConfigRef.value.formItems[4].hidden = !isHiddenPermission
+  modalConfigRef.value.formItems[5].hidden = isHiddenPermission
+  // 清除表单校验信息
+  pageModalRef.value?.clearFormVaidate()
 }
 
+// 组件 hooks
 const editCallBack = (row: any) => {
   editRowRef.value = row
-  setParentMenu(row.type)
+  setMenuForm(row.type)
 }
 const addCallBack = () => {
   editRowRef.value = null
   // 新建菜单初始隐藏菜单icon
-  modalConfigRef.value.formItems[4].hidden = true
+  modalConfigRef.value.formItems[3].hidden = true
 }
 editCallBack.isPre = true
 addCallBack.isPre = true
-
-const { pageContentRef } = usePageContent()
 const { pageModalRef, addClick, editClick } = usePageModal(addCallBack, editCallBack)
 
 // 所有下拉框值改变时触发
@@ -56,20 +61,18 @@ const handleSelectChange = (value: number, prop: string) => {
       break
   }
 }
+
 // 菜单层级值改变
 const handleTypeChange = (value: number) => {
-  setParentMenu(value)
+  setMenuForm(value)
 
-  // 当切换菜单层级时，重新生成formdata
-  pageModalRef.value?.updateFomData(() => {
-    // 重新设置type值
-    pageModalRef.value?.setFormData('type', value)
-
-    // 如果创建一级菜单，设置菜单URL的默认值
+  pageModalRef.value?.resetFomData().then(({ oldVal }) => {
+    const { name, type } = oldVal
+    const patchData = { name, type, url: '' }
     if (!editRowRef.value) {
-      const urlDefaultVal = value === 1 ? '/main/<url>' : ''
-      pageModalRef.value?.setFormData('url', urlDefaultVal)
+      patchData.url = type === 1 ? '/main/<url>' : ''
     }
+    pageModalRef.value?.patchFormData(patchData)
   })
 }
 
@@ -79,14 +82,13 @@ const handleParentIdChange = (value: number) => {
   const dict = dictMap.value.get(typeValue - 1)
   const parentMenuUrl = dict.find((item: any) => item.value === value).url
   const urlDefaultVal = parentMenuUrl + '/<url>'
-  pageModalRef.value?.setFormData('url', urlDefaultVal)
+  pageModalRef.value?.patchFormData({ url: urlDefaultVal })
 }
 </script>
 
 <template>
   <div class="menu">
     <page-content
-      ref="pageContentRef"
       @add-click="addClick"
       @edit-click="editClick"
       :content-config="contentConfig"

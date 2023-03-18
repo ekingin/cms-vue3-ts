@@ -21,42 +21,56 @@ export let firstMenuItem: any = null
 
 /**
  * 把权限菜单数组映射成路由数组
- * @param menuInfo 菜单数组
+ * @param menus 菜单数组
  * @returns 路由数组
  */
-export const mapMenusToRoutes = (menuInfo: any[]) => {
+export const mapMenusToRoutes = (menus: any[]) => {
   // 1.获取本地所有的路由数组
   const localRoutes = loadLocalRoutes()
 
-  // 2 根据菜单映射出有权限的路由对象数组
-  const routes: RouteRecordRaw[] = []
-  for (const menu of menuInfo) {
-    for (const submenu of menu.children) {
-      const route = localRoutes.find((item) => item.path === submenu.url)
-      if (route) {
-        // 2.1 根据一级菜单的路径注册重定向路由对象，重定向到所在的第一个二级菜单项
-        if (!routes.find((item) => item.path === menu.url)) {
-          routes.push({ path: menu.url, redirect: route.path })
+  // 2 根据权限菜单映射出有权限的路由对象数组
+  const authRoutes: RouteRecordRaw[] = []
+  function filterAuthRoutes(menus: any[]) {
+    for (const menu of menus ?? []) {
+      if (menu.url) {
+        // 1.添加重定向路由
+        if (menu.url && menu.children && menu.children[0].url) {
+          authRoutes.push({ path: menu.url, redirect: menu.children[0].url })
         }
-        routes.push(route)
+        // 2.添加有权限的路由
+        const route = localRoutes.find((item) => item.path === menu.url)
+        if (route) {
+          authRoutes.push(route)
+        }
+        // 3.记录第一个有权限的路由
+        if (route && !firstMenuItem) {
+          firstMenuItem = menu
+        }
       }
-      if (route && !firstMenuItem) {
-        firstMenuItem = submenu
+      if (menu.children) {
+        filterAuthRoutes(menu.children)
       }
     }
   }
+  filterAuthRoutes(menus)
 
-  return routes
+  // 3.添加 registeredRoutes 中的路由
+  const registeredRoutes = ['moment-detail']
+  registeredRoutes.forEach((routeName) =>
+    authRoutes.push(localRoutes.find((item) => item.name === routeName)!)
+  )
+
+  return authRoutes
 }
 
 /**
  * 根据路径匹配菜单数组中的菜单对象
  * @param path 当前页面的路径
- * @param menuInfo 菜单数组
+ * @param menus 菜单数组
  * @returns 菜单对象
  */
-export const mapPathToMenu = (path: string, menuInfo: any[]) => {
-  for (const menu of menuInfo) {
+export const mapPathToMenu = (path: string, menus: any[]) => {
+  for (const menu of menus) {
     for (const submenu of menu.children) {
       if (path === submenu.url) {
         return submenu
@@ -68,13 +82,13 @@ export const mapPathToMenu = (path: string, menuInfo: any[]) => {
 /**
  * 根据页面路径和菜单数组映射出面包屑数组
  * @param path 页面路径
- * @param menuInfo 菜单数组
+ * @param menus 菜单数组
  * @returns 面包屑数组
  */
-export const mapPathToBreadcrumb = (path: string, menuInfo: any[]) => {
+export const mapPathToBreadcrumb = (path: string, menus: any[]) => {
   const breadcrumb: any[] = []
 
-  for (const menu of menuInfo) {
+  for (const menu of menus) {
     for (const submenu of menu.children) {
       if (path === submenu.url) {
         breadcrumb.push({ name: menu.name, path: menu.url })
@@ -104,65 +118,65 @@ export const mapDataListToOptions = (list: any[]) => {
  * @param dict 字典集合
  * @returns label
  */
-export const mapValueFromDict = (value: string | number, dict?: any[]) => {
+export const mapValueFromDict = (value: number, dict?: any[]) => {
   if (!dict) return
   return dict.find((item) => item.value === value)?.label
 }
 
 /**
  * 把菜单数组映射成ids数组，只取最内层叶节点的id
- * @param menuList
+ * @param menus
  * @returns ids
  */
-export const mapMenuListToIds = (menuList: any[]) => {
+export const mapMenuListToIds = (menus: any[]) => {
   const ids: number[] = []
 
-  function recurseMenuList(menuList: any[]) {
-    for (const item of menuList) {
+  function recurseMenus(menus: any[]) {
+    for (const item of menus ?? []) {
       if (item.children) {
-        recurseMenuList(item.children)
+        recurseMenus(item.children)
       } else {
         ids.push(item.id)
       }
     }
   }
-  recurseMenuList(menuList)
+  recurseMenus(menus)
 
   return ids
 }
 
 /**
  * 根据权限菜单映射出所有的按钮权限
- * @param menuList 菜单数组
+ * @param menus 菜单数组
  * @returns permissions
  */
-export const mapMenuListToPermisions = (menuList: any[]) => {
+export const mapMenusToPermisions = (menus: any[]) => {
   const permisions: string[] = []
 
-  function recurseMenuList(list: any[]) {
-    for (const item of list) {
-      if (item.type === 3) {
+  function recurseMenus(list: any[]) {
+    for (const item of list ?? []) {
+      if (item.permission) {
         permisions.push(item.permission)
       } else {
-        recurseMenuList(item.children ?? [])
+        recurseMenus(item.children)
       }
     }
   }
-  recurseMenuList(menuList)
+  recurseMenus(menus)
 
   return permisions
 }
 
 /**
  * 根据完整菜单创建 Map<type, dict<label, name, url>>
- * @param menuList
+ * @param menus
  * @returns map
  */
-export const mapMenuListToDict = (menuList: any[]) => {
+export const mapMenuListToDict = (menus: any[]) => {
   const map = new Map()
 
-  function recurseMapList(menuList: any[]) {
-    for (const item of menuList) {
+  function recurseMapList(menus: any[]) {
+    for (const item of menus) {
       // 1.新建一个键值对
       if (!map.get(item.type)) {
         map.set(item.type, [])
@@ -184,7 +198,7 @@ export const mapMenuListToDict = (menuList: any[]) => {
       }
     }
   }
-  recurseMapList(menuList)
+  recurseMapList(menus)
 
   return map
 }

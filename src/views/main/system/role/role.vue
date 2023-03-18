@@ -17,34 +17,31 @@ import usePageModal from '@/hooks/usePageModal'
 import useMainStore from '@/store/main/main'
 import { mapMenuListToIds } from '@/utils/map-data'
 
-const { pageContentRef, searchClick, resetClick } = usePageContent()
-const { pageModalRef, addClick, editClick } = usePageModal(addCallBack, editCallBack)
-
-// el-tree
-// 1.获取完整的菜单用于tree组件显示
-const mainStore = useMainStore()
-const { entireMenuList } = storeToRefs(mainStore)
-
-// 2.添加权限，收集选中的数节点的ids，传给page-modal
-let otherInfo = ref({})
-function handleCheckChange(data1: any, data2: any) {
-  const selectedKeys = [...data2.checkedKeys, ...data2.halfCheckedKeys]
-  otherInfo.value = { menuList: selectedKeys }
-}
-
-// 3.编辑权限菜单时，拿到回显的数据
+// 编辑权限菜单时，拿到回显的数据
 const inroTreeRef = ref<InstanceType<typeof ElTree>>()
-function editCallBack(row: any) {
+const editCallBack = (row: any) => {
   nextTick(() => {
     inroTreeRef.value?.setCheckedKeys(mapMenuListToIds(row.menuList))
   })
 }
-
-// 4.新建时，把菜单置空
-function addCallBack() {
+// 新建时，把菜单树选项置空
+const addCallBack = () => {
   nextTick(() => {
     inroTreeRef.value?.setCheckedKeys([])
   })
+}
+const { pageContentRef, searchClick, resetClick } = usePageContent()
+const { pageModalRef, addClick, editClick } = usePageModal(addCallBack, editCallBack)
+
+// 获取完整的菜单
+const mainStore = useMainStore()
+const { wholeMenuTree } = storeToRefs(mainStore)
+
+// 收集选中的节点的ids
+const otherInfo = ref<{ menuIds: number[] }>({ menuIds: [] })
+const handleCheckChange = (data1: any, data2: any) => {
+  const selectedKeys = [...data2.checkedKeys, ...data2.halfCheckedKeys]
+  otherInfo.value.menuIds = selectedKeys
 }
 </script>
 
@@ -62,10 +59,10 @@ function addCallBack() {
       @edit-click="editClick"
     ></page-content>
     <page-modal ref="pageModalRef" :modal-config="modalConfig" :other-info="otherInfo">
-      <template #introTree>
+      <template #menuIds>
         <el-tree
           ref="inroTreeRef"
-          :data="entireMenuList"
+          :data="wholeMenuTree"
           :props="{ children: 'children', label: 'name' }"
           show-checkbox
           node-key="id"
@@ -76,4 +73,4 @@ function addCallBack() {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped lang="less"></style>

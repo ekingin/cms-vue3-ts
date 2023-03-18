@@ -18,7 +18,7 @@ const searchConfig: ISearchConfig = {
     },
     {
       label: '创建时间：',
-      prop: 'createAt',
+      prop: 'createTime',
       type: 'date-range',
       startPlaceholder: '开始日期',
       endPlaceholder: '结束日期',

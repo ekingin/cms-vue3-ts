@@ -10,6 +10,7 @@ const isKeepPwd = ref<boolean>(localCache.getCache(ISKEEPWD) ?? false)
 watch(isKeepPwd, (newV) => {
   localCache.setCache(ISKEEPWD, newV)
 })
+
 // 登录按钮
 const activePanelName = ref('account')
 const accountRef = ref<InstanceType<typeof AccountPane>>()

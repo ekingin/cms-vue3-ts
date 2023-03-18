@@ -1,35 +1,24 @@
 import type { ISearchConfig } from '@/types/main'
 
 const searchConfig: ISearchConfig = {
-  pageName: 'users',
+  pageName: 'department',
   formLabelWidth: 120,
   formItems: [
     {
-      label: '用户名：',
-      prop: 'name',
+      label: '动态内容：',
+      prop: 'content',
       type: 'input',
-      placeholder: '请输入用户名'
+      placeholder: '请输入动态内容关键字'
     },
     {
-      label: '真实姓名：',
-      prop: 'realname',
-      type: 'input',
-      placeholder: '请输入真实姓名'
-    },
-    {
-      label: '手机号：',
-      prop: 'cellphone',
-      type: 'input',
-      placeholder: '请输入手机号'
-    },
-    {
-      label: '状态：',
-      prop: 'status',
+      label: '查找范围：',
+      prop: 'range',
       type: 'select',
-      default: '1',
+      placeholder: '请选择查找范围',
+      default: 'all',
       options: [
-        { label: '启用', value: '1' },
-        { label: '禁用', value: '0' }
+        { label: '自己', value: 'myself' },
+        { label: '所有', value: 'all' }
       ]
     },
     {

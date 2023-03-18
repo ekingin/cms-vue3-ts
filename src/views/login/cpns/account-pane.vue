@@ -13,18 +13,18 @@ const accountForm = reactive({
 })
 const accountRules: FormRules = {
   name: [
-    { required: true, message: '必须输入帐号信息~', trigger: 'blur' },
+    { required: true, message: '请输入用户名', trigger: 'blur' },
     {
       pattern: /^[a-z0-9]{6,20}$/,
-      message: '必须是6~20数字或字母组成~',
+      message: '用户名由6~20数字或字母组成',
       trigger: 'blur'
     }
   ],
   password: [
-    { required: true, message: '必须输入密码信息~', trigger: 'blur' },
+    { required: true, message: '请输入密码', trigger: 'blur' },
     {
       pattern: /^[a-z0-9]{3,}$/,
-      message: '必须是3位以上数字或字母组成',
+      message: '密码由6位以上数字或字母组成',
       trigger: 'blur'
     }
   ]
@@ -68,10 +68,10 @@ defineExpose({
       label-width="80px"
       status-icon
     >
-      <el-form-item label="帐号：" prop="name">
+      <el-form-item label="用户名：" prop="name">
         <el-input v-model="accountForm.name" placeholder="请输入帐号" />
       </el-form-item>
-      <el-form-item label="密码：" prop="password">
+      <el-form-item label="密  码：" prop="password">
         <el-input v-model="accountForm.password" show-password placeholder="请输入密码" />
       </el-form-item>
     </el-form>

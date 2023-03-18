@@ -10,21 +10,13 @@ class EKRequest {
 
     // 1.全局拦截器
     this.instance.interceptors.request.use(
-      (config) => {
-        return config
-      },
-      (err) => {
-        return err
-      }
+      (config) => config,
+      (err) => err
     )
 
     this.instance.interceptors.response.use(
-      (res) => {
-        return res.data
-      },
-      (err) => {
-        return err
-      }
+      (res) => res.data,
+      (err) => err
     )
 
     // 2.实例拦截器
@@ -54,9 +46,7 @@ class EKRequest {
           }
           resolve(res)
         })
-        .catch((err) => {
-          reject(err)
-        })
+        .catch((err) => reject(err))
     })
   }
 

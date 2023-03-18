@@ -16,8 +16,8 @@ const contentConfig: IContentConfig = {
       align: 'center',
       dictUrl: API_DICT_DEPARTMENT
     },
-    { label: '创建时间', prop: 'createAt', type: 'time', align: 'center' },
-    { label: '更新时间', prop: 'updateAt', type: 'time', align: 'center' },
+    { label: '创建时间', prop: 'createTime', type: 'time', align: 'center' },
+    { label: '更新时间', prop: 'updateTime', type: 'time', align: 'center' },
     {
       label: '操作',
       type: 'handler',

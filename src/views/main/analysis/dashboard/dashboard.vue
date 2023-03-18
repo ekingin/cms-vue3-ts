@@ -29,12 +29,12 @@ const showGoodsCategoryCount = computed(() => {
 })
 const showGoodsCategorySale = computed(() => {
   const labels = categoryGoodsSale.value.map((item) => item.name)
-  const values = categoryGoodsSale.value.map((item) => item.goodsCount)
+  const values = categoryGoodsSale.value.map((item) => item.saleCount)
   return { labels, values }
 })
 const showGoodsCategoryFavor = computed(() => {
   const labels = categoryGoodsFavor.value.map((item) => item.name)
-  const values = categoryGoodsFavor.value.map((item) => item.goodsFavor)
+  const values = categoryGoodsFavor.value.map((item) => item.favorCount)
   return { labels, values }
 })
 const showGoodsAddressSale = computed(() => {
