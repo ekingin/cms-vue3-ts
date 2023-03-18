@@ -31,13 +31,14 @@ export default defineConfig({
     })
   ],
   server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:6100/',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
+    port: 6100
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:6100/',
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, '')
+    //   }
+    // }
   },
   resolve: {
     alias: {
