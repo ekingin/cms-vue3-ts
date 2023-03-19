@@ -31,14 +31,13 @@ export default defineConfig({
     })
   ],
   server: {
-    port: 6100
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:6100/',
-    //     changeOrigin: true,
-    //     rewrite: (path) => path.replace(/^\/api/, '')
-    //   }
-    // }
+    proxy: {
+      '/cms-api': {
+        target: 'http://localhost:6100/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
   resolve: {
     alias: {
