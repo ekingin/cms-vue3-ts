@@ -34,8 +34,7 @@ export default defineConfig({
     proxy: {
       '/cms-api': {
         target: 'http://localhost:6100/',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        changeOrigin: true
       }
     }
   },
