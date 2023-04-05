@@ -6,28 +6,28 @@ const searchConfig: ISearchConfig = {
   formLabelWidth: 120,
   formItems: [
     {
-      type: 'input',
       prop: 'name',
       label: '商品名称：',
+      type: 'input',
       placeholder: '请输入查询的商品名称'
     },
     {
-      type: 'input',
       prop: 'address',
       label: '商品地址：',
+      type: 'input',
       placeholder: '请输入查询的商品地址'
     },
     {
-      type: 'select',
       prop: 'status',
       label: '状态：',
+      type: 'select',
       placeholder: '请选择查询的商品状态',
       options: GOODS_STATUS_DICT
     },
     {
-      type: 'date-range',
       prop: 'createTime',
       label: '创建时间：',
+      type: 'date-range',
       startPlaceholder: '开始日期',
       endPlaceholder: '结束日期',
       rangeSeparator: '-'

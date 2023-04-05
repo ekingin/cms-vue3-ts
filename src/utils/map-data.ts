@@ -1,3 +1,4 @@
+import type { IOption } from '@/types'
 import type { RouteRecordRaw } from 'vue-router'
 
 /**
@@ -118,9 +119,9 @@ export const mapDataListToOptions = (list: any[]) => {
  * @param dict 字典集合
  * @returns label
  */
-export const mapValueFromDict = (value: number, dict?: any[]) => {
-  if (!dict) return
-  return dict.find((item) => item.value === value)?.label
+export const mapValueToLabel = (value: number, dict: IOption[]) => {
+  if (!Array.isArray(dict) || dict.length <= 0) return value
+  return dict.find((item) => item.value === value)?.label ?? value
 }
 
 /**

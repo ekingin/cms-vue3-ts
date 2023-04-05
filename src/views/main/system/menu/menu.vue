@@ -11,6 +11,7 @@ import usePageModal from '@/hooks/usePageModal'
 
 import useMainStore from '@/store/main/main'
 import { mapMenuListToDict } from '@/utils/map-data'
+import type { ISelectFormItem } from '@/types'
 
 const editRowRef = ref()
 const modalConfigRef = ref(modalConfig)
@@ -26,7 +27,7 @@ const setMenuForm = (menuType: number) => {
   const isHiddenParent = dict ? false : true
   const isHiddedIcon = menuType === 1 ? false : true
   const isHiddenPermission = menuType === 3 ? false : true
-  modalConfigRef.value.formItems[2].options = parentMenuOptions
+  ;(modalConfigRef.value.formItems[2] as ISelectFormItem).options = parentMenuOptions
   modalConfigRef.value.formItems[2].hidden = isHiddenParent
   modalConfigRef.value.formItems[3].hidden = isHiddedIcon
   // url 和 permission 只显示一个

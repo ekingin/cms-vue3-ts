@@ -28,15 +28,15 @@ interface IModalConfig extends ISearchConfig {
 }
 
 export interface IPropItem {
+  label: string
   type?: 'index' | 'selection' | 'time' | 'money' | 'handler' | 'slot'
-  label?: string
   prop?: string
   width?: string
   minWidth?: string
   btns?: IBtnItem[]
   size?: 'large' | 'default' | 'small'
   fixed?: 'right' | 'left' | true
-  dict?: IDictItem[]
+  dict?: IOption[]
   dictUrl?: string
   sortable?: boolean
   align?: 'left' | 'center' | 'right'
@@ -57,17 +57,35 @@ export interface IOption {
   value: string | number
 }
 
-export interface IFormItem {
-  type: string
+export type IFormItem = IInputFormItem | ISelectFormItem | IDateRangeFormItem | ISlotFormItem
+
+export interface ICommonFormItem {
   prop: string
-  label?: string
+  label: string
+  default?: string | string[]
+  hidden?: boolean
+  disabled?: boolean
+}
+
+export interface IInputFormItem extends ICommonFormItem {
+  type: 'input' | 'password'
   placeholder?: string
+}
+
+export interface ISelectFormItem extends ICommonFormItem {
+  type: 'select'
+  dictUrl?: string
+  options?: IOption[]
+  placeholder?: string
+}
+
+export interface IDateRangeFormItem extends ICommonFormItem {
+  type: 'date-range'
   startPlaceholder?: string
   endPlaceholder?: string
   rangeSeparator?: string
-  default?: string | null
-  hidden?: boolean
-  options?: IOption[]
-  dictUrl?: string
-  disabled?: boolean
+}
+
+export interface ISlotFormItem extends ICommonFormItem {
+  type: 'slot'
 }

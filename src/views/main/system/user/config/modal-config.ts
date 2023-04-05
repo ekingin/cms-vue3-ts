@@ -6,8 +6,18 @@ const modalConfig: IModalConfig = {
   title: { add: '新建用户', edit: '编辑用户' },
   formLabelWidth: 100,
   formItems: [
-    { label: '用户名：', prop: 'name', type: 'input', placeholder: '请输入用户名' },
-    { label: '真实姓名：', prop: 'realname', type: 'input', placeholder: '请输入真实姓名' },
+    {
+      label: '用户名：',
+      prop: 'name',
+      type: 'input',
+      placeholder: '请输入用户名'
+    },
+    {
+      label: '真实姓名：',
+      prop: 'realname',
+      type: 'input',
+      placeholder: '请输入真实姓名'
+    },
     {
       label: '密码：',
       prop: 'password',
@@ -15,7 +25,12 @@ const modalConfig: IModalConfig = {
       placeholder: '请输入密码',
       hidden: false
     },
-    { label: '手机号：', prop: 'cellphone', type: 'input', placeholder: '请输入手机号' },
+    {
+      label: '手机号：',
+      prop: 'cellphone',
+      type: 'input',
+      placeholder: '请输入手机号'
+    },
     {
       label: '部门：',
       prop: 'departmentId',

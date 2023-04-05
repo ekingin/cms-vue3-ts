@@ -5,15 +5,15 @@ const searchConfig: ISearchConfig = {
   formLabelWidth: 120,
   formItems: [
     {
-      type: 'input',
-      prop: 'name',
       label: '分类名称：',
+      prop: 'name',
+      type: 'input',
       placeholder: '请输入查询的商品名称'
     },
     {
-      type: 'date-range',
-      prop: 'createTime',
       label: '创建时间：',
+      prop: 'createTime',
+      type: 'date-range',
       startPlaceholder: '开始日期',
       endPlaceholder: '结束日期',
       rangeSeparator: '-'

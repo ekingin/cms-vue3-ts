@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import router from '@/router'
 import useSystemStore from '@/store/main/system'
 import useMainStore from '@/store/main/main'
 import useLoginStore from '@/store/login/login'
-import { formatUTC } from '@/utils/format'
-import { mapValueFromDict } from '@/utils/map-data'
+import { formatUTC, formatMoney } from '@/utils/format'
+import { mapValueToLabel } from '@/utils/map-data'
 import usePermission from '@/hooks/usePermission'
-import type { IContentConfig } from '@/types'
+import type { IContentConfig, IPropItem } from '@/types'
 
 const props = defineProps<{
   contentConfig: IContentConfig
@@ -29,6 +29,47 @@ for (const item of props.contentConfig.propList) {
     item.dict = await mainStore.queryDictAction(item.dictUrl!)
   })
 }
+
+/**
+ * 格式化表格值
+ * 在 formatFnEntries 中添加对应的格式化函数元组，其中：
+ * 元组第二个函数是格式化函数
+ * 元组第一个函数用来返回元组第二个函数的参数列表
+ */
+type IFormatFnTuple = [
+  (item: IPropItem, row: any, column: any) => any[],
+  (...agrs: any[]) => string | number
+]
+const formatFnEntries: IFormatFnTuple[] = [
+  [
+    (item: IPropItem, row: any, column: any) =>
+      item.type === 'time' ? [row[column.property], 'YYYY-MM-DD HH:mm:ss'] : [],
+    formatUTC
+  ],
+  [
+    (item: IPropItem, row: any, column: any) =>
+      item.type === 'money' ? [row[column.property]] : [],
+    formatMoney
+  ],
+  [
+    (item: IPropItem, row: any, column: any) =>
+      item.dict ? [row[column.property], item.dict] : [],
+    mapValueToLabel
+  ]
+]
+const formatColumnValue = computed(() => {
+  return (fieldItem: IPropItem, scope: any) => {
+    const { row, column } = scope
+
+    // 1.获取格式化函数元组
+    const formatFnTuple = formatFnEntries.find((item) => item[0](fieldItem, row, column).length)
+    // 2.如果没有对应的格式化函数元组，则直接返回原始值
+    if (!formatFnTuple) return row[column.property]
+    // 3.使用格式化函数元组处理值
+    const [formatFnArgs, formatFn] = formatFnTuple
+    return formatFn(...formatFnArgs(fieldItem, row, column))
+  }
+})
 
 // 按钮权限管理：查询、删除、新建、修改
 const isCreate = usePermission(`${pageName.value}:create`)
@@ -118,35 +159,27 @@ defineExpose({
     <div class="content-table">
       <el-table :data="dataList" border style="width: 100%" v-bind="contentConfig.tableTreeProps">
         <template v-for="item in contentConfig.propList" :key="item.type">
-          <el-table-column v-if="item.type === 'index'" v-bind="item" />
-          <el-table-column v-else-if="item.type === 'selection'" v-bind="item" />
-          <el-table-column v-else-if="item.type === 'time'" v-bind="item">
-            <template #default="{ row, column }">
-              <span>{{ formatUTC(row[column.property]) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column v-else-if="item.type === 'money'" v-bind="item">
-            <template #default="{ row, column }">
-              <span>{{ row[column.property] + '¥' }}</span>
-            </template>
-          </el-table-column>
+          <el-table-column
+            v-if="item.type === 'index' || item.type === 'selection'"
+            v-bind="item"
+          />
           <el-table-column v-else-if="item.type === 'slot'" v-bind="item">
             <template #default="scope">
               <slot :name="item.prop" v-bind="scope"></slot>
             </template>
           </el-table-column>
           <el-table-column v-else-if="item.type === 'handler'" v-bind="item">
-            <template #default="scope">
+            <template #default="{ row }">
               <template v-for="bItem in item.btns" :key="bItem.label">
                 <el-button
                   v-if="
-                    (scope.row.type ? scope.row.type < 3 : true) &&
-                    (scope.row.userId ? scope.row.userId === userInfo.id : true) &&
+                    (row.type ? row.type < 3 : true) &&
+                    (row.userId ? row.userId === userInfo.id : true) &&
                     ((bItem.trigger === 'UPDATE' && isUpdate) ||
                       (bItem.trigger === 'DELETE' && isDelete))
                   "
                   v-bind="bItem"
-                  @click="handleBtnClick(bItem, scope.row)"
+                  @click="handleBtnClick(bItem, row)"
                 >
                   {{ bItem.label }}
                 </el-button>
@@ -154,11 +187,8 @@ defineExpose({
             </template>
           </el-table-column>
           <el-table-column v-else v-bind="item">
-            <template #default="{ row, column }" v-if="item.dict">
-              <span>{{ mapValueFromDict(row[column.property], item.dict) }}</span>
-            </template>
-            <template #default="{ row, column }" v-else>
-              <span>{{ row[column.property] }}</span>
+            <template #default="scope">
+              <span>{{ formatColumnValue(item, scope) }}</span>
             </template>
           </el-table-column>
         </template>

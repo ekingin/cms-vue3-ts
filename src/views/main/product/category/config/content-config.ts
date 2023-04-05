@@ -5,13 +5,13 @@ const contentConfig: IContentConfig = {
   title: '分类列表',
   operation: [{ label: '新建', type: 'primary', icon: 'Plus', trigger: 'CREATE' }],
   propList: [
-    { type: 'index', label: '序号', width: '80', align: 'center' },
+    { label: '序号', type: 'index', width: '80', align: 'center' },
     { label: '分类名称', prop: 'name', align: 'center', showOverflowTooltip: true },
     { label: '创建时间', prop: 'createTime', type: 'time', align: 'center' },
     { label: '更新时间', prop: 'updateTime', type: 'time', align: 'center' },
     {
-      type: 'handler',
       label: '操作',
+      type: 'handler',
       width: '180px',
       align: 'center',
       btns: [

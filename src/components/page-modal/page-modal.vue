@@ -3,7 +3,7 @@ import { ref, reactive, computed, watchEffect } from 'vue'
 import useSystemStore from '@/store/main/system'
 import useMainStore from '@/store/main/main'
 import type { IModalConfig, IBtnItem } from '@/types/main'
-import type { ElForm, Resolve } from 'element-plus'
+import type { ElForm } from 'element-plus'
 
 const props = defineProps<{
   modalConfig: IModalConfig
@@ -29,9 +29,9 @@ for (const item of props.modalConfig.formItems) {
   formData[item.prop] = item.default ?? ''
 
   // dictUrl -> options
-  if (item.dictUrl) {
+  if (item.type === 'select' && item.dictUrl) {
     watchEffect(async () => {
-      item.options = await mainStore.queryDictAction(item.dictUrl!)
+      item.options = (await mainStore.queryDictAction(item.dictUrl!)) ?? []
     })
   }
 }

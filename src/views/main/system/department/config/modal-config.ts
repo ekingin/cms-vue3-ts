@@ -19,8 +19,7 @@ const modalConfig: IModalConfig = {
       label: '部门领导：',
       prop: 'leader',
       type: 'input',
-      placeholder: '请输入部门领导',
-      default: null
+      placeholder: '请输入部门领导'
     },
     {
       label: '上级部门：',

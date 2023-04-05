@@ -13,8 +13,8 @@ const contentConfig: IContentConfig = {
     },
     { label: '创建时间', prop: 'createTime', type: 'time', align: 'center', width: '220' },
     {
-      type: 'handler',
       label: '操作',
+      type: 'handler',
       width: '100',
       align: 'center',
       btns: [{ label: '删除', type: 'danger', icon: 'Delete', link: true, trigger: 'DELETE' }]

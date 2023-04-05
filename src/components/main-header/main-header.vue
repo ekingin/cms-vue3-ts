@@ -15,7 +15,7 @@ const foldIconClick = () => {
 <template>
   <div class="main-header">
     <div class="header-left">
-      <el-icon size="30px" @click="foldIconClick">
+      <el-icon class="fold-btn" size="30px" @click="foldIconClick">
         <component :is="isFold ? 'Fold' : 'Expand'"></component>
       </el-icon>
       <header-crumb></header-crumb>
@@ -37,6 +37,9 @@ const foldIconClick = () => {
     height: 100%;
     display: flex;
     align-items: center;
+    .fold-btn {
+      cursor: pointer;
+    }
   }
   .el-icon {
     margin-right: 8px;

@@ -5,7 +5,7 @@ const contentConfig: IContentConfig = {
   title: '商品列表',
   operation: [{ label: '新建', type: 'primary', icon: 'Plus', trigger: 'CREATE' }],
   propList: [
-    { type: 'index', label: '序号', width: '60', align: 'center' },
+    { label: '序号', type: 'index', width: '60', align: 'center' },
     { label: '商品名称', prop: 'name', width: '150', align: 'center', showOverflowTooltip: true },
     { label: '描述', prop: 'desc', align: 'center', showOverflowTooltip: true },
     { label: '原价格', prop: 'oldPrice', type: 'money', align: 'center' },
@@ -17,8 +17,8 @@ const contentConfig: IContentConfig = {
     { label: '创建时间', prop: 'createTime', type: 'time', width: '180', align: 'center' },
     { label: '更新时间', prop: 'updateTime', type: 'time', width: '180', align: 'center' },
     {
-      type: 'handler',
       label: '操作',
+      type: 'handler',
       width: '150px',
       align: 'center',
       fixed: 'right',
